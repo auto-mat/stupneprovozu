@@ -7,7 +7,7 @@ class Lokace(models.Model):
         return self.name
 
 class Provoz(models.Model):
-    ident = models.IntegerField()
+    ident = models.CharField(max_length=255)
     level = models.IntegerField()
     location = models.ForeignKey(Lokace)
     level = models.IntegerField()
