@@ -58,10 +58,14 @@ WSGI_APPLICATION = 'project.wsgi.application'
 # https://docs.djangoproject.com/en/1.7/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
+        'default': {
+                'ENGINE': 'django.contrib.gis.db.backends.postgis',
+                'NAME': 'stupneprovozu',
+                'USER': 'django',
+                'PASSWORD': 'osmiznak',
+                'HOST': 'localhost',
+                'PORT': '',
+        },
 }
 
 # Internationalization
@@ -82,6 +86,8 @@ USE_TZ = False
 # https://docs.djangoproject.com/en/1.7/howto/static-files/
 
 STATIC_URL = '/static/'
+
+TSK_URL = 'http://www.tsk-praha.cz/tskexport/json/stupneprovozu'
 
 LOGGING = {
     'version': 1,
