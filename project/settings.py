@@ -37,6 +37,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'tsk',
+    'daterange_filter',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -53,20 +54,6 @@ ROOT_URLCONF = 'project.urls'
 
 WSGI_APPLICATION = 'project.wsgi.application'
 
-
-# Database
-# https://docs.djangoproject.com/en/1.7/ref/settings/#databases
-
-DATABASES = {
-        'default': {
-                'ENGINE': 'django.contrib.gis.db.backends.postgis',
-                'NAME': 'stupneprovozu',
-                'USER': 'django',
-                'PASSWORD': 'osmiznak',
-                'HOST': 'localhost',
-                'PORT': '',
-        },
-}
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.7/topics/i18n/
@@ -108,3 +95,9 @@ LOGGING = {
         },
     },
 }
+
+# import local settings
+try:
+    from settings_local import *
+except ImportError:
+    pass
