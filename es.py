@@ -13,7 +13,7 @@ from elasticsearch.helpers import streaming_bulk
 from elasticsearch_dsl import DocType, Object, String, GeoPoint, Date, Integer, Float
 from elasticsearch_dsl.connections import connections
 
-es = connections.create_connection()
+es = connections.create_connection(hosts=['http://31eccb709ebda3928dd01ae144d5379a.eu-west-1.aws.found.io:9200'])
 
 class TrafficReport(DocType):
     location = Object(properties={
@@ -26,7 +26,12 @@ class TrafficReport(DocType):
         index = 'traffic'
 
 def get_provoz():
-    for p in Provoz.objects.all().select_related('location')[:500000].iterator():
+   cnt = Provoz.objects.count()
+   print 'Celkem %d zaznamu' % cnt
+   batch = 500000
+   i = 1
+   while i*batch < cnt:
+     for p in Provoz.objects.all().select_related('location')[i*batch:(i+1)*batch].iterator():
         yield {
             'location': {'name': p.location.name, 'geo': {'lat': 0, 'lon': 0}},
             'timestamp': p.time_start,
@@ -35,6 +40,7 @@ def get_provoz():
             'den_v_tydnu': p.time_start.weekday(),
             '_id': p.id
         }
+     i += 1
 
 def django_import():
     #es.indices.delete(index='traffic', ignore=404)

@@ -86,6 +86,7 @@ USE_TZ = False
 # https://docs.djangoproject.com/en/1.7/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = '/home/aplikace/stupneprovozu/static/'
 
 TSK_URL = 'http://www.tsk-praha.cz/tskexport/json/stupneprovozu'
 
@@ -96,7 +97,7 @@ LOGGING = {
         'file': {
             'level': 'DEBUG',
             'class': 'logging.FileHandler',
-            'filename': 'tsk.log',
+            'filename': os.path.join(BASE_DIR, 'tsk.log'),
         },
     },
     'loggers': {
