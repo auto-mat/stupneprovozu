@@ -1,12 +1,15 @@
+# -*- coding: utf-8 -*-
+
 from django.db import models
 
-# Create your models here.
 class Lokace(models.Model):
     name = models.CharField(max_length=255)
+    favourite = models.BooleanField(verbose_name="Oblíbená", default=False)
     class Meta:
         ordering = ['name']
     def __unicode__(self):
         return self.name
+
 
 class Provoz(models.Model):
     ident = models.CharField(max_length=255)
