@@ -3,7 +3,7 @@
 from daterange_filter.filter import DateRangeFilter
 from django.contrib import admin
 from django.contrib.admin import SimpleListFilter
-from django.db.models import Count
+from django.db.models import Count, Q
 from django.utils.safestring import mark_safe
 from .models import Lokace, Provoz
 
@@ -46,6 +46,50 @@ class TimeFilter(SimpleListFilter):
         else:
             return queryset
 
+
+class WeekDayFilter(SimpleListFilter):
+    title = "Den v týdnu"
+    parameter_name = "weekday"
+
+    def lookups(self, request, model_admin):
+        list_tuple = []
+        for location in Lokace.objects.filter(favourite=True):
+            list_tuple.append((location.id, location.name))
+        return [
+            ('vsedni', 'Všední den'),
+            ('vikend', 'Víkend'),
+            ('pondeli', 'Pondělí'),
+            ('utery', 'Úterý'),
+            ('streda', 'Středa'),
+            ('ctvrtek', 'Čtvrtek'),
+            ('patek', 'Pátek'),
+            ('sobota', 'Sobota'),
+            ('nedele', 'Neděle'),
+            ]
+
+
+    def queryset(self, request, queryset):
+        if self.value() == 'vsedni':
+            return queryset.exclude(Q(time_start__week_day=1) | Q(time_start__week_day=7))
+        elif self.value() == 'vikend':
+            return queryset.filter(Q(time_start__week_day=1) | Q(time_start__week_day=7))
+        elif self.value() == 'pondeli':
+            return queryset.filter(time_start__week_day=2)
+        elif self.value() == 'utery':
+            return queryset.filter(time_start__week_day=3)
+        elif self.value() == 'streda':
+            return queryset.filter(time_start__week_day=4)
+        elif self.value() == 'ctvrtek':
+            return queryset.filter(time_start__week_day=5)
+        elif self.value() == 'patek':
+            return queryset.filter(time_start__week_day=6)
+        elif self.value() == 'sobota':
+            return queryset.filter(time_start__week_day=7)
+        elif self.value() == 'nedele':
+            return queryset.filter(time_start__week_day=1)
+        else:
+            return queryset
+
 def show_levels(modeladmin, request, queryset):
     levels = dict(queryset.values('level').annotate(level_count = Count('id')).order_by().values_list('level', 'level_count'))
     count = queryset.count()
@@ -58,7 +102,7 @@ show_levels.short_description = "Ukázat stupně provozu"
 
 class ProvozAdmin(admin.ModelAdmin):
     list_display = ('location', 'level', 'time_generated', 'time_start', 'time_stop')
-    list_filter = (LocationFilter, TimeFilter, ('time_start', DateRangeFilter), 'level')
+    list_filter = (TimeFilter, ('time_start', DateRangeFilter), 'level', 'location__favourite', WeekDayFilter, LocationFilter, )
     search_fields = ('location__name',)
     actions = (show_levels,)
 
