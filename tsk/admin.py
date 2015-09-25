@@ -5,7 +5,7 @@ from django.contrib import admin
 from django.contrib.admin import SimpleListFilter
 from django.db.models import Count, Q
 from django.utils.safestring import mark_safe
-from .models import Lokace, Provoz
+from .models import Lokace, Provoz, SkupinaLokaci
 
 class LocationFilter(SimpleListFilter):
     title = "Lokace"
@@ -102,7 +102,7 @@ show_levels.short_description = "Ukázat stupně provozu"
 
 class ProvozAdmin(admin.ModelAdmin):
     list_display = ('location', 'level', 'time_generated', 'time_start', 'time_stop')
-    list_filter = (TimeFilter, ('time_start', DateRangeFilter), 'level', 'location__favourite', WeekDayFilter, LocationFilter, )
+    list_filter = (TimeFilter, ('time_start', DateRangeFilter), 'level', 'location__favourite', WeekDayFilter, LocationFilter, 'location__skupinalokaci__name')
     search_fields = ('location__name',)
     actions = (show_levels,)
 
@@ -112,5 +112,13 @@ class LokaceAdmin(admin.ModelAdmin):
     search_fields = ('name',)
     list_filter = ('favourite',)
 
+
+class SkupinaLokaciAdmin(admin.ModelAdmin):
+    list_display = ('name',)
+    search_fields = ('name',)
+    filter_horizontal = ('lokace',)
+
+
+admin.site.register(SkupinaLokaci, SkupinaLokaciAdmin)
 admin.site.register(Lokace, LokaceAdmin)
 admin.site.register(Provoz, ProvozAdmin)

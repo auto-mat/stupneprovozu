@@ -2,6 +2,11 @@
 
 from django.db import models
 
+class SkupinaLokaci(models.Model):
+    name = models.CharField(max_length=255)
+    lokace = models.ManyToManyField("Lokace")
+
+
 class Lokace(models.Model):
     name = models.CharField(max_length=255)
     favourite = models.BooleanField(verbose_name="Oblíbená", default=False)
