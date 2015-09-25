@@ -5,6 +5,7 @@ from django.contrib import admin
 from django.contrib.admin import SimpleListFilter
 from django.db.models import Count, Q
 from django.utils.safestring import mark_safe
+from import_export.admin import ImportExportModelAdmin
 from .models import Lokace, Provoz, SkupinaLokaci
 
 class LocationFilter(SimpleListFilter):
@@ -100,20 +101,20 @@ def show_levels(modeladmin, request, queryset):
 show_levels.short_description = "Ukázat stupně provozu"
 
 
-class ProvozAdmin(admin.ModelAdmin):
+class ProvozAdmin(ImportExportModelAdmin):
     list_display = ('location', 'level', 'time_generated', 'time_start', 'time_stop')
     list_filter = (TimeFilter, ('time_start', DateRangeFilter), 'level', 'location__favourite', WeekDayFilter, LocationFilter, 'location__skupinalokaci__name')
     search_fields = ('location__name',)
     actions = (show_levels,)
 
 
-class LokaceAdmin(admin.ModelAdmin):
+class LokaceAdmin(ImportExportModelAdmin):
     list_display = ('name', 'favourite',)
     search_fields = ('name',)
     list_filter = ('favourite',)
 
 
-class SkupinaLokaciAdmin(admin.ModelAdmin):
+class SkupinaLokaciAdmin(ImportExportModelAdmin):
     list_display = ('name',)
     search_fields = ('name',)
     filter_horizontal = ('lokace',)

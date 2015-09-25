@@ -38,6 +38,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'tsk',
     'daterange_filter',
+    'import_export',
 )
 
 MIDDLEWARE_CLASSES = (
